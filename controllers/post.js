@@ -1,7 +1,13 @@
 const Post = require('../models/post')
 
 exports.getRoutes=(req,res)=>{
-    res.send(' hello from node js  :) : ):))');
+    const post = Post.find().then(posts=>{
+        return res.status(200).json({
+            posts:posts
+        });
+    }).catch(err=>{
+        console.log(err); 
+    })
 }
 
 exports.createPost=(req,res)=>{
