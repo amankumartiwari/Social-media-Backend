@@ -17,10 +17,14 @@ const port = process.env.PORT || 8080
 
 app.use(bodyparser.json());
 app.use(expressValidator());
+
 const postRoutes = require('./routes/posts');
+const authRoutes = require('./routes/auth');
+
 
 app.use(morgan('dev'))
 app.use('/', postRoutes);
+app.use('/',authRoutes);
 
 app.listen(port , ()=>{
     console.log(`server is running at port:${port} `);
