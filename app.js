@@ -3,6 +3,7 @@ const app= express();
 const morgan=require('morgan')
 const mongoose =require('mongoose')
 const bodyparser = require('body-parser')
+const cookieparser = require('cookie-parser')
 const expressValidator = require('express-validator')
 const dotenv = require('dotenv');
 dotenv.config();
@@ -16,6 +17,7 @@ mongoose.connection.on("error",(err)=>{
 const port = process.env.PORT || 8080
 
 app.use(bodyparser.json());
+app.use(cookieparser());
 app.use(expressValidator());
 
 const postRoutes = require('./routes/posts');

@@ -38,6 +38,13 @@ set(  function(password){
 
 userSchema.methods={
  
+     authenticate: function(plaintext){
+         
+        return this.encryptPassword(plaintext)===this.hashed_password;
+
+     },
+
+
     encryptPassword: function(password){
         if(!password)
         return "";
