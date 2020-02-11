@@ -22,11 +22,17 @@ app.use(expressValidator());
 
 const postRoutes = require('./routes/posts');
 const authRoutes = require('./routes/auth');
-
+const userRoutes = require('./routes/user')
 
 app.use(morgan('dev'))
 app.use('/', postRoutes);
 app.use('/',authRoutes);
+app.use('/',userRoutes);
+app.use( (err,req,res,next)=>{
+    if(err.name == 'UnauthorizedError'){
+        res.status(401).json({err:'token error'})
+    }
+} )
 
 app.listen(port , ()=>{
     console.log(`server is running at port:${port} `);
