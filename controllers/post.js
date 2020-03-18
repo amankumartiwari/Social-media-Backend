@@ -1,7 +1,7 @@
 const Post = require('../models/post')
 const formidable = require('formidable')
 const fs = require('fs')
-
+const _= require('lodash');
 
 
 
@@ -83,7 +83,7 @@ exports.postByUser =(req,res)=>{
 
 exports.isPoster = (req,res)=>{
 
-let isPoster= req.post && req.auth && req.post.postedBy._id === req.auth._id;
+let isPoster= req.post && req.auth && req.post.postedBy._id == req.auth._id;
  
    if(!isPoster){
        return res.staus(403).json({
@@ -91,6 +91,25 @@ let isPoster= req.post && req.auth && req.post.postedBy._id === req.auth._id;
        })
    }
   next();
+}
+
+
+exports.updatePost= (req,res)=>{
+
+    let post= req.post;
+
+    post= _.extend(post,req.body)  // it will change value of post after comparing with req.body
+ 
+    post.updated= Date.now();
+    post.save((err)=>{
+        if(err){
+            return res.status(401).json({
+                err:'unauthorized'
+            })
+        }
+        return res.status(200).json({post});
+    })
+ 
 }
 
 
@@ -110,8 +129,6 @@ exports.deletePost = (req,res)=>{
        })
 
    })
-
-
 }
 
 
