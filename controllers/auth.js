@@ -23,13 +23,13 @@ exports.signin = (req,res)=>{
     User.findOne({email} , (err,user)=>{
         if(err || !user){
             return res.status(401).json({
-                err:'user with email not found'
+                error:'user with email not found'
             })
         }
   
          if(!user.authenticate(password)){
              return res.status(401).json({
-                 err:"password doesn't match"
+                 error:"password doesn't match"
              })
          }
 

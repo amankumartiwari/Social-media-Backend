@@ -1,5 +1,8 @@
 const User = require('../models/user');
 const _= require('lodash');
+const formidable = require('formidable')
+const fs = require('fs')
+
 exports.userFindById =(req,res,next,id)=>{
 
      User.findById(id).exec( (err,user)=>{
@@ -45,20 +48,50 @@ exports.getUser  = (req,res)=>{
 }
 
 exports.updateUser = (req,res)=>{
-   let user= req.profile;
+   
+  let form = new formidable.IncomingForm();
+  form.keepExtensions=true;
+ 
+  form.parse( req , (err,fields,files) =>{
+      if(err){
+          return res.status(400).json({
+              error:"photo caould not be uploaded"
+          })
+      }
+   let user = req.profile
+   user = _.extend(user,fields)
+   user.updated = Date.now();
 
-   user= _.extend(user,req.body)  // it will change value of user after coomparing with req.body
+   if(files.photo){
+       user.photo.data=fs.readFileSync(files.photo.path)
+       user.photo.contentType= files.photo.type 
+   }
 
-   user.updated= Date.now();
-   user.save((err)=>{
-       if(err){
-           return res.status(401).json({
-               err:'unauthorized'
-           })
-       }
-       return res.status(200).json({user});
-   })
+    user.save((err,result)=>{
+        if(err){
+            return res.status(400).json({
+                error:err
+            })
+        }
+        user.hashed_password=undefined;
+        user.salt =undefined
+        res.json(user);
+    })
+
+  })
+
 }
+
+exports.userPhoto = (req,res,next)=>{
+
+   if(req.profile.photo.data){
+       res.set(("content-type",req.profile.photo.contentType));
+       return res.send(req.profile.photo.data)
+   }
+   next();
+
+}
+
 
 exports.deleteUser = (req,res)=>{
     let user = req.profile;
