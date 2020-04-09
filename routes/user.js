@@ -11,7 +11,8 @@ const {
   addFollowing,
   addFollower,
   removeFollowing,
-  removeFollower
+  removeFollower,
+  findPeople
 } = require("../controllers/user");
 const router = express.Router();
 
@@ -26,6 +27,10 @@ router.delete("/user/:userId", requireSignin, deleteUser);
 
 //for photo
 router.get("/user/photo/:userId", userPhoto);
+
+//who to follow
+
+router.get("/user/findpeople/:userId", requireSignin , findPeople)
 
 // any rote containing userById param will first execute user find by id
 router.param("userId", userFindById);

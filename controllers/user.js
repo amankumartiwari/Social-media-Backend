@@ -121,7 +121,7 @@ exports.addFollower = (req, res) => {
   User.findByIdAndUpdate(
     req.body.followId,
     {
-      $push: { following: req.body.userId }
+      $push: { followers: req.body.userId }
     },
     { new: true }
   )
@@ -157,7 +157,7 @@ exports.removeFollowing = (req, res, next) => {
     User.findByIdAndUpdate(
       req.body.unfollowId,
       {
-        $pull: { following: req.body.userId }
+        $pull: { followers: req.body.userId }
       },
       { new: true }
     )
@@ -173,3 +173,16 @@ exports.removeFollowing = (req, res, next) => {
       });
   };
   
+
+  exports.findPeople = (req,res)=>{
+  
+     let following = req.profile.following
+     following.push(req.profile._id)
+
+     User.find( {_id : {$nin: following }} , (err,users)=>{
+      if (err) {
+        return res.status(400).json({ error: err });
+      }
+        res.json(users)
+     }).select('name')
+  }
