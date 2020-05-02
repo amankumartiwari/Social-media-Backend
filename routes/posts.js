@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getRoutes,
+  getPosts,
   createPost,
   postByUser,
   postFindById,
@@ -13,7 +13,7 @@ const { userFindById } = require("../controllers/user");
 const { requireSignin } = require("../controllers/auth");
 const { createPostValidator } = require("../validators");
 
-router.get("/posts", getRoutes);
+router.get("/posts", getPosts);
 
 router.post(
   "/post/new/:userId",
