@@ -54,13 +54,12 @@ exports.updateUser = (req, res) => {
   form.parse(req, (err, fields, files) => {
     if (err) {
       return res.status(400).json({
-        error: "photo caould not be uploaded"
+        error: "photo could not be uploaded"
       });
     }
     let user = req.profile;
     user = _.extend(user, fields);
     user.updated = Date.now();
-
     if (files.photo) {
       user.photo.data = fs.readFileSync(files.photo.path);
       user.photo.contentType = files.photo.type;

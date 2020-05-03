@@ -6,6 +6,7 @@ const _= require('lodash');
 
 
 exports.postFindById = (req,res , next , id)=>{
+    console.log("post find by id")
     Post.findById(id)
     .populate("postedBy" , "_id name")
     .exec( (err , post)=>{
@@ -44,11 +45,10 @@ exports.createPost = (req, res, next) => {
             });
         }
         let post = new Post(fields);
-
+      
         req.profile.hashed_password = undefined;
         req.profile.salt = undefined;
         post.postedBy = req.profile;
-
         if (files.photo) {
             post.photo.data = fs.readFileSync(files.photo.path);
             post.photo.contentType = files.photo.type;
@@ -63,6 +63,9 @@ exports.createPost = (req, res, next) => {
         });
     });
 };
+
+
+
 exports.postByUser =(req,res)=>{
 
   Post.find({ postedBy: req.profile._id })
@@ -88,6 +91,7 @@ let isPoster= req.post && req.auth && req.post.postedBy._id == req.auth._id;
            msg:'user not authorized',
        })
    }
+   console.log("isPoster")
   next();
 }
 
@@ -114,7 +118,7 @@ exports.updatePost= (req,res)=>{
 exports.deletePost = (req,res)=>{
 
    let post= req.post;
-
+console.log("del")
    post.remove((err,post)=>{
        if(err){
            return res.status(400).json({
@@ -130,9 +134,14 @@ exports.deletePost = (req,res)=>{
 }
 
 
+exports.photo = (req, res, next) => {
+    res.set('Content-Type', req.post.photo.contentType);
+    return res.send(req.post.photo.data);
+};
 
-
-
+exports.singlePost = (req,res)=>{
+    return res.json(req.post);
+}
 
 
 
